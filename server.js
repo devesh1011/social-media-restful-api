@@ -26,7 +26,7 @@ app.use("/api/users", userRoute); // user route
 app.use("/api/posts", postRoute); // post route
 
 app.get("/", (req, res) => {
-  res.send("Hello World");
+  res.json("Hello World");
 });
 
 app.listen(process.env.PORT, () => {
