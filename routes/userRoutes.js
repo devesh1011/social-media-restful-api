@@ -11,6 +11,7 @@ const {
 
 const router = require("express").Router();
 const likeRoute = require("../routes/likeRoutes");
+const followRoute = require("../routes/followerRoutes");
 
 router
   .get("/:id", userProfile)
@@ -19,6 +20,6 @@ router
   .put("/:id", updateUserProfile)
   .delete("/:id", deleteUserProfile);
 
-router.use("/:userId/follow");
+router.use("/:userId/follow", followRoute);
 
-module.exports = router;
+module.exports = router

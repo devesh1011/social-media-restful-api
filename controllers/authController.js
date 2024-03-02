@@ -1,4 +1,32 @@
-const register = async (req, res) => {};
+const {
+  genPassword,
+  comparePassword,
+  issueToken,
+} = require("../utils/passwordUtils");
+const User = require("../models/User");
+const handleError = require("../middleware/errorHandler");
+
+const register = async (req, res) => {
+  try {
+    const { username, password, email, name } = req.body;
+    console.log(req.body)
+
+    // const hashedPassword = await genPassword(password);
+
+    // const newUser = await User.create({
+    //   username,
+    //   password: hashedPassword,
+    //   email,
+    //   name,
+    // });
+
+    // const token = issueToken(newUser);
+
+    // res.json({ success: true, user: newUser, token });
+  } catch (error) {
+    // handleError(error, res);
+  }
+};
 
 const login = async (req, res) => {};
 
