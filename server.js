@@ -15,8 +15,8 @@ app.use(session());
 app.use(passport.initialize());
 
 app.use("/api/auth", authRoute); // auth route
-app.use("/api/users", userRoute);
-app.use("/api/posts", postRoute);
+app.use("/api/users", userRoute); // user route
+app.use("/api/posts", postRoute); // post route
 
 app.listen(process.env.PORT, () => {
   console.log(`Server listening https://localhost/${process.env.PORT}`);
