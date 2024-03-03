@@ -4,26 +4,32 @@ const {
   issueToken,
 } = require("../utils/passwordUtils");
 const User = require("../models/User");
-const handleError = require("../middleware/errorHandler");
 
-const register = async (req, res) => {
+const register = async (req, res, next) => {
   try {
     const { username, password, email, name } = req.body;
 
-    const hashedPassword = await genPassword(password);
+    const user = await User.findOne({ username });
+
+    if (user) {
+      const err = new Error("User already exists");
+      err.status = err.status || "error";
+      err.statusCode = 401;
+
+      next(err);
+    }
+    const hashedPass = await genPassword(password);
 
     const newUser = await User.create({
       username,
-      password: hashedPassword,
       email,
+      password: hashedPass,
       name,
     });
 
-    const token = issueToken(newUser);
-
-    res.json({ success: true, user: newUser, token });
+    res.send(newUser);
   } catch (error) {
-    handleError(error, res, error.message);
+    next(error);
   }
 };
 
