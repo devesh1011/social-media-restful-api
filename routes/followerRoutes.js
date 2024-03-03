@@ -5,9 +5,10 @@ const {
   followUser,
   getAllFollowing,
 } = require("../controllers/followerController");
+const passport = require("passport");
 
 router
-  .post("/", followUser)
-  .delete("/", unFollowUser)
+  .post("/", passport.authenticate("jwt", { session: false }), followUser)
+  .delete("/", passport.authenticate("jwt", { session: false }), unFollowUser);
 
-  module.exports = router;
+module.exports = router;

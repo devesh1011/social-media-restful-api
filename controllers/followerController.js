@@ -1,6 +1,8 @@
 const User = require("../models/User");
 
-const followUser = async (req, res) => {};
+const followUser = async (req, res) => {
+  
+};
 
 const unFollowUser = async (req, res) => {};
 

@@ -54,9 +54,11 @@ const login = asyncHandler(async (req, res, next) => {
   res.status(200).json({ success: true, token });
 });
 
-const logout = async (req, res) => {};
+const logout = asyncHandler(async (req, res, next) => {
+  res.json({ message: "Logged out successfully" });
+});
 
-const refresh = async (req, res) => {};
+const refresh = asyncHandler(async (req, res) => {});
 
 module.exports = {
   refresh,
