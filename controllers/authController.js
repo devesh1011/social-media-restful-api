@@ -4,36 +4,55 @@ const {
   issueToken,
 } = require("../utils/passwordUtils");
 const User = require("../models/User");
+const CustomError = require("../middleware/CustomError");
+const asyncHandler = require("../utils/asyncHandler");
 
-const register = async (req, res, next) => {
-  try {
-    const { username, password, email, name } = req.body;
+const register = asyncHandler(async (req, res, next) => {
+  const { username, password, email, name } = req.body;
 
-    const user = await User.findOne({ username });
+  const hashedPass = await genPassword(password);
 
-    if (user) {
-      const err = new Error("User already exists");
-      err.status = err.status || "error";
-      err.statusCode = 401;
+  const user = await User.findOne({ username });
 
-      next(err);
-    }
-    const hashedPass = await genPassword(password);
+  if (user) {
+    const err = new CustomError("user already exists", 401);
 
-    const newUser = await User.create({
-      username,
-      email,
-      password: hashedPass,
-      name,
-    });
-
-    res.send(newUser);
-  } catch (error) {
-    next(error);
+    return next(err);
   }
-};
 
-const login = async (req, res) => {};
+  const newUser = await User.create({
+    username,
+    email,
+    password: hashedPass,
+    name,
+  });
+
+  const token = await issueToken(newUser);
+
+  res.send({ newUser, token });
+});
+
+const login = asyncHandler(async (req, res, next) => {
+  const { username, password } = req.body;
+
+  const user = await User.findOne({ username });
+
+  if (!user) {
+    const err = new CustomError("User does not exists!", 404);
+    next(err);
+  }
+
+  const isValid = await comparePassword(password, user.password);
+
+  if (!isValid) {
+    const err = new CustomError("Enter a valid password", 401);
+    next(err);
+  }
+
+  const token = await issueToken(user);
+
+  res.status(200).json({ success: true, token });
+});
 
 const logout = async (req, res) => {};
 
