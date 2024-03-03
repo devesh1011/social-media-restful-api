@@ -1,6 +1,6 @@
 const CustomError = require("./CustomError");
 
-const handleError = (error, res) => {
+const handleError = (error, res, message) => {
   if (error.name === "ValidationError") {
     // Mongoose validation error
     const validationErrors = Object.values(error.errors).map(

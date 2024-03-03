@@ -32,5 +32,5 @@ app.get("/", (req, res) => {
 app.listen(process.env.PORT, () => {
   connectDB(process.env.DB_URI);
 
-  console.log(`Server listening https://localhost/${process.env.PORT}`);
+  console.log(`Server listening http://localhost:${process.env.PORT}`);
 });
