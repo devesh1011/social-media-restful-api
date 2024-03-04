@@ -5,14 +5,17 @@ const {
 } = require("../controllers/userController");
 
 const {
+  followUser,
+  unFollowUser,
   getAllFollowers,
   getAllFollowing,
 } = require("../controllers/followerController");
 
 const router = require("express").Router();
 const likeRoute = require("../routes/likeRoutes");
-const followRoute = require("../routes/followerRoutes");
 const passport = require("../config/passport");
+const asyncHandler = require("../utils/asyncHandler");
+const CustomError = require("../middleware/CustomError");
 
 router
   .get("/:id", userProfile)
@@ -27,14 +30,26 @@ router
     deleteUserProfile
   );
 
+// follow routes
 router
-  .get("/:id/followers", getAllFollowers)
-  .get("/:id/following", getAllFollowing);
-
-router.use(
-  "/:id/follow",
-  passport.authenticate("jwt", { session: false }),
-  followRoute
-);
-
+  .post(
+    "/:userId/follow",
+    passport.authenticate("jwt", { session: false }),
+    followUser
+  )
+  .get(
+    "/:userId/followers",
+    passport.authenticate("jwt", { session: false }),
+    getAllFollowers
+  )
+  .get(
+    "/:userId/following",
+    passport.authenticate("jwt", { session: false }),
+    getAllFollowing
+  )
+  .delete(
+    "/:userId/follow",
+    passport.authenticate("jwt", { session: false }),
+    unFollowUser
+  );
 module.exports = router;
