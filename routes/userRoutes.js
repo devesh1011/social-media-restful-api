@@ -32,11 +32,6 @@ router
 
 // follow routes
 router
-  .post(
-    "/:userId/follow",
-    passport.authenticate("jwt", { session: false }),
-    followUser
-  )
   .get(
     "/:userId/followers",
     passport.authenticate("jwt", { session: false }),
@@ -46,6 +41,11 @@ router
     "/:userId/following",
     passport.authenticate("jwt", { session: false }),
     getAllFollowing
+  )
+  .post(
+    "/:userId/follow",
+    passport.authenticate("jwt", { session: false }),
+    followUser
   )
   .delete(
     "/:userId/follow",
