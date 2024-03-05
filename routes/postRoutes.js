@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const commentRoute = require("../routes/commentRoutes");
 const likeRoute = require("../routes/likeRoutes");
+const passport = require("passport");
 const {
   getAllPosts,
   getPostById,
@@ -12,11 +13,15 @@ const {
 router
   .get("/", getAllPosts)
   .get("/:id", getPostById)
-  .post("/", createPost)
-  .put("/:id", updatePost)
-  .delete("/:id", deletePost);
+  .post("/", passport.authenticate("jwt", { session: false }), createPost)
+  .put("/:id", passport.authenticate("jwt", { session: false }), updatePost)
+  .delete("/:id", passport.authenticate("jwt", { session: false }), deletePost);
 
-router.use("/:postId/comments", commentRoute);
-router.use("/:postId/like", likeRoute);
+router.use("/:postId/comments", commentRoute); // comment route
+router.use(
+  "/:postId/like",
+  passport.authenticate("jwt", { session: false }),
+  likeRoute
+); //like route
 
 module.exports = router;

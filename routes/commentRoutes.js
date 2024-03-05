@@ -5,11 +5,20 @@ const {
   deletePostComment,
   updatePostComment,
 } = require("../controllers/commentController");
+const passport = require("passport");
 
 router
   .get("/", getPostComments)
-  .post("/", newPostComment)
-  .put("/:commentId", updatePostComment)
-  .delete("/:commentId", deletePostComment);
+  .post("/", passport.authenticate("jwt", { session: false }), newPostComment)
+  .put(
+    "/:commentId",
+    passport.authenticate("jwt", { session: false }),
+    updatePostComment
+  )
+  .delete(
+    "/:commentId",
+    passport.authenticate("jwt", { session: false }),
+    deletePostComment
+  );
 
 module.exports = router;

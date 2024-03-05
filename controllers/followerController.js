@@ -41,7 +41,6 @@ const followUser = asyncHandler(async (req, res, next) => {
 const unFollowUser = asyncHandler(async (req, res, next) => {
   const { userId } = req.params;
   const followerId = req.user._id;
-  console.log(followerId);
 
   if (userId === followerId.toString()) {
     const err = new CustomError("You cannot unFollow your account", 400);
@@ -75,9 +74,55 @@ const unFollowUser = asyncHandler(async (req, res, next) => {
     .json({ success: true, message: "You have unFollowed this user" });
 });
 
-const getAllFollowers = async (req, res) => {};
+const getAllFollowers = asyncHandler(async (req, res, next) => {
+  const { userId } = req.params;
 
-const getAllFollowing = async (req, res) => {};
+  const user = await User.findById(userId).populate("followers");
+
+  if (!user) {
+    const err = new CustomError("User not found", 404);
+
+    return next(err);
+  }
+
+  const followers = user.followers.map((follower) => {
+    // Now each follower will be the full user object
+    return {
+      _id: follower._id,
+      username: follower.username,
+      name: follower.name,
+    };
+  });
+  res.status(200).json({ success: true, followers });
+});
+
+const getAllFollowing = asyncHandler(async (req, res) => {
+  const { userId } = req.params;
+
+  const user = await User.findById(userId).populate("following");
+
+  if (!user) {
+    const err = new CustomError("User not found", 404);
+
+    return next(err);
+  }
+
+  if (userId === req.user._id.toString()) {
+    const err = new CustomError("Not Allowed", 401);
+
+    return next(err);
+  }
+
+  const following = user.following.map((following) => {
+    // Now each follower will be the full user object
+    return {
+      _id: following._id,
+      username: following.username,
+      name: following.name,
+    };
+  });
+  res.status(200).json({ success: true, following });
+});
 
 module.exports = {
   followUser,
