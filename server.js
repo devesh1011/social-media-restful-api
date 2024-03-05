@@ -5,7 +5,6 @@ const authRoute = require("./routes/authRoutes");
 const userRoute = require("./routes/userRoutes");
 const postRoute = require("./routes/postRoutes");
 const connectDB = require("./config/db");
-const path = require("path");
 const CustomError = require("./middleware/CustomError");
 const errorHandler = require("./middleware/errorHandler");
 const cors = require("cors");
